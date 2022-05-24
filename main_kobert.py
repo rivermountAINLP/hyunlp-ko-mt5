@@ -49,10 +49,10 @@ def main():
     model_name = args.model_name
     hidden_size = args.hidden_size
     task = args.task
-    data_labels_num = 1
 
     # Do downstream task
     if task == "sts":
+        data_labels_num = 1
         tokenizer = KoBERTTokenizer.from_pretrained(model_name)
         kobert_model = KoBertForRegression(model_name, hidden_size, data_labels_num)
         klue_sts(args, kobert_model, tokenizer)
