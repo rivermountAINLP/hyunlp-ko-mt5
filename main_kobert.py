@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--lr', default=1e-5, type=float)
     parser.add_argument('--gpu', default=0, type=int)
     parser.add_argument('--seed', default=4885, type=int)
+    parser.add_argument('--task', default="sts", type=str)
 
     args = parser.parse_args()
     setattr(args, 'device', f'cuda:{args.gpu}' if torch.cuda.is_available() and args.gpu >= 0 else 'cpu')
@@ -47,12 +48,16 @@ def main():
     # Hyper-hyper parameters
     model_name = args.model_name
     hidden_size = args.hidden_size
+    task = args.task
     data_labels_num = 1
 
-    tokenizer = KoBERTTokenizer.from_pretrained(model_name)  # FIXME Instantiate model from other file factory pattern
-    kobert_model = KoBertForRegression(model_name, hidden_size, data_labels_num)
-
-    klue_sts(args, kobert_model, tokenizer)
+    # Do downstream task
+    if task == "sts":
+        tokenizer = KoBERTTokenizer.from_pretrained(model_name)
+        kobert_model = KoBertForRegression(model_name, hidden_size, data_labels_num)
+        klue_sts(args, kobert_model, tokenizer)
+    else:
+        print(f"There is no such task as {task}")
 
 
 if __name__ == '__main__':
